@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { useChainId } from "wagmi";
+// import { useChainId } from "wagmi"; // unused
 import { Spinner } from "~~/components/Spinner";
 import { FieldLabel } from "~~/components/ui";
-import tokens from "~~/constants/tokens";
+// import tokens from "~~/constants/tokens"; // unused
 import { useApproveForSplitting } from "~~/hooks/useApproveForSplitting";
-
 
 interface TokenSelectorProps {
   tokenContract: string;
@@ -23,8 +22,8 @@ export function TokenSelector({ tokenContract, setTokenContract, splitErc20Loadi
   const [selectedToken, setSelectedToken] = useState(TOKENS[0]);
   const [customToken, setCustomToken] = useState("");
   const [approveAmount] = useState<string>("10000000");
-  
-  const chainId = useChainId();
+
+  // const chainId = useChainId(); // unused for now
 
   const tokenAddress = useMemo(() => {
     return selectedToken.symbol === "CUSTOM" ? customToken.trim() : selectedToken.address;
@@ -34,7 +33,7 @@ export function TokenSelector({ tokenContract, setTokenContract, splitErc20Loadi
     allowance,
     writeAsync: approve,
     balance,
-    tokenSymbol,
+    // tokenSymbol, // unused
     isLoading: dataLoading,
   } = useApproveForSplitting({
     tokenAddress: tokenContract,
@@ -64,12 +63,12 @@ export function TokenSelector({ tokenContract, setTokenContract, splitErc20Loadi
             <select
               className="bg-transparent outline-none text-sm flex-1 text-white"
               value={selectedToken.symbol}
-              onChange={(e) => {
-                const next = TOKENS.find((t) => t.symbol === e.target.value)!;
+              onChange={e => {
+                const next = TOKENS.find(t => t.symbol === e.target.value)!;
                 setSelectedToken(next);
               }}
             >
-              {TOKENS.map((t) => (
+              {TOKENS.map(t => (
                 <option key={t.symbol} value={t.symbol} className="bg-slate-900 text-white">
                   {t.symbol} — {t.name}
                 </option>
@@ -78,8 +77,12 @@ export function TokenSelector({ tokenContract, setTokenContract, splitErc20Loadi
           </div>
         </div>
         <div className="text-right text-xs text-slate-400 whitespace-nowrap">
-          <div>Balance: <span className="text-slate-200">{balance?.toFixed(4) || "0.00"}</span></div>
-          <div>Allowance: <span className="text-slate-200">{allowance || "0.00"}</span></div>
+          <div>
+            Balance: <span className="text-slate-200">{balance?.toFixed(4) || "0.00"}</span>
+          </div>
+          <div>
+            Allowance: <span className="text-slate-200">{allowance || "0.00"}</span>
+          </div>
         </div>
       </div>
 
@@ -88,7 +91,7 @@ export function TokenSelector({ tokenContract, setTokenContract, splitErc20Loadi
           <FieldLabel>Custom Token Address</FieldLabel>
           <input
             value={customToken}
-            onChange={(e) => setCustomToken(e.target.value)}
+            onChange={e => setCustomToken(e.target.value)}
             placeholder="0x…"
             className="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5 outline-none focus:ring-2 focus:ring-cyan-500/40 text-white"
           />

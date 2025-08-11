@@ -1,16 +1,15 @@
 "use client";
 
-import type { NextPage } from "next";
-import { useAccount } from "wagmi";
 import { useState } from "react";
-import { Pill } from "~~/components/ui";
+import type { NextPage } from "next";
 import { SplitterForm } from "~~/components/splitter";
+import { Pill } from "~~/components/ui";
 
 const Home: NextPage = () => {
   // High‑level tabs
   const [mode, setMode] = useState<"eth" | "token">("token");
   const [splitKind, setSplitKind] = useState<"equal" | "unequal">("equal");
-  const account = useAccount();
+  // const account = useAccount(); // unused for now
 
   return (
     <div className="min-h-screen bg-[#0a0f14] text-white overflow-x-hidden">
@@ -24,11 +23,19 @@ const Home: NextPage = () => {
       <div className="relative z-10 pt-24 pb-6">
         <div className="mx-auto max-w-6xl px-4 py-4">
           <div className="flex items-center gap-2 flex-wrap justify-center">
-            <Pill active={mode === "eth"} onClick={() => setMode("eth")}>Split ETH</Pill>
-            <Pill active={mode === "token"} onClick={() => setMode("token")}>Split Tokens</Pill>
+            <Pill active={mode === "eth"} onClick={() => setMode("eth")}>
+              Split ETH
+            </Pill>
+            <Pill active={mode === "token"} onClick={() => setMode("token")}>
+              Split Tokens
+            </Pill>
             <div className="mx-2 h-5 w-px bg-white/10" />
-            <Pill active={splitKind === "equal"} onClick={() => setSplitKind("equal")}>Equal Splits</Pill>
-            <Pill active={splitKind === "unequal"} onClick={() => setSplitKind("unequal")}>Unequal Splits</Pill>
+            <Pill active={splitKind === "equal"} onClick={() => setSplitKind("equal")}>
+              Equal Splits
+            </Pill>
+            <Pill active={splitKind === "unequal"} onClick={() => setSplitKind("unequal")}>
+              Unequal Splits
+            </Pill>
           </div>
         </div>
       </div>
@@ -43,4 +50,3 @@ const Home: NextPage = () => {
 };
 
 export default Home;
-

@@ -1,5 +1,6 @@
 import { readContract } from "@wagmi/core";
-import { erc20ABI } from "wagmi";
+import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import { erc20Abi } from "viem";
 
 export const getChainNameForCovalent = (id: number) => {
   switch (id) {
@@ -50,12 +51,12 @@ export const getDate = (timestamp: number) => {
 
 export const getTokenSymbol = async (tokenAddress: string) => {
   if (tokenAddress && tokenAddress != "") {
-    const data = await readContract({
-      address: tokenAddress,
-      abi: erc20ABI,
+    const data = await readContract(wagmiConfig, {
+      address: tokenAddress as `0x${string}`,
+      abi: erc20Abi,
       functionName: "symbol",
     });
-    const symbol = await Promise.all(data);
+    const symbol = data;
     return symbol;
   }
   return "";

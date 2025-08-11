@@ -1,7 +1,7 @@
 import React from "react";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import { FieldLabel } from "~~/components/ui";
 import { Address } from "~~/components/scaffold-eth";
+import { FieldLabel } from "~~/components/ui";
 
 interface RecipientInputProps {
   recipients: string;
@@ -37,7 +37,7 @@ export function RecipientInput({
         <textarea
           rows={4}
           value={recipients}
-          onChange={(e) => {
+          onChange={e => {
             setRecipients(e.target.value);
             addMultipleAddress(e.target.value);
           }}

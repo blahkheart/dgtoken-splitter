@@ -4,10 +4,10 @@ import { useRouter } from "next/router";
 import { Address } from "../scaffold-eth";
 import ExportList from "../splitter-ui/splitter-components/ExportList";
 import { formatEther } from "viem";
-import { useNetwork } from "wagmi";
+import { useChainId } from "wagmi";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import useSpliiterHistory from "~~/hooks/useSpliiterHistory";
-import { getBlockExplorerTxLink, getTargetNetwork } from "~~/utils/scaffold-eth";
+import { getBlockExplorerTxLink, getTargetNetworks } from "~~/utils/scaffold-eth";
 import { getDate } from "~~/utils/scaffold-eth/ethsplitter";
 
 const EthSplitsHistory = () => {
@@ -16,7 +16,7 @@ const EthSplitsHistory = () => {
   const { ethSplitEvents } = useSpliiterHistory();
   const [activeIndex, setActiveIndex] = useState<number[]>([]);
 
-  const { chain } = useNetwork();
+  const chainId = useChainId();
 
   const handleToggle = (index: number) => {
     const currentActive = [...activeIndex];
@@ -43,7 +43,7 @@ const EthSplitsHistory = () => {
   };
 
   const currencySymbol = () => {
-    return chain?.id == 137 ? "MATIC" : "ETH";
+    return chainId == 137 ? "MATIC" : "ETH";
   };
 
   return (
@@ -67,7 +67,7 @@ const EthSplitsHistory = () => {
               <div className="flex flex-col">
                 [
                 {event.args.recipients.map((address: string) => (
-                  <Address key={address} address={address} hideBlockie={true} />
+                  <Address key={address} address={address} />
                 ))}
                 ]
               </div>
@@ -86,7 +86,7 @@ const EthSplitsHistory = () => {
                     <span>Transaction Link</span>
                     <span className="">
                       <Link
-                        href={getBlockExplorerTxLink(getTargetNetwork().id, event.log.transactionHash)}
+                        href={getBlockExplorerTxLink(getTargetNetworks()[0].id, event.log.transactionHash)}
                         target="_blank"
                       >
                         <ArrowTopRightOnSquareIcon className="text-sm w-4 cursor-pointer" aria-hidden="true" />

@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction } from "react";
-import { GetAccountResult } from "@wagmi/core";
+// import { GetAccountResult } from "@wagmi/core"; // deprecated
 
 export type UiJsxProps = {
   splitItem: string;
-  account: GetAccountResult;
+  account: any; // account type
   splitterContract: string;
 };
 
 export type TokenDataJsxProps = {
   splitErc20Loading: boolean;
-  account: GetAccountResult;
+  account: any; // account type
   splitterContract: string;
   setTokenContract: Dispatch<SetStateAction<string>>;
   tokenContract: string;

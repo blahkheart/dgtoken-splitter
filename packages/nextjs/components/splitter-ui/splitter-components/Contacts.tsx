@@ -32,7 +32,7 @@ const Contacts = ({ setWallets, wallets }: { setWallets: Dispatch<SetStateAction
                     });
                   }}
                 >
-                  <Address hideBlockie={true} hideCopyIcon={true} disableAddressLink={true} address={contact} />
+                  <Address disableAddressLink={true} address={contact} />
                   <PlusIcon className="w-1/6" />
                 </a>
               </li>

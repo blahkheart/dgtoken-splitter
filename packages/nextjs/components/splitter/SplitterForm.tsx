@@ -1,11 +1,11 @@
-import React, { useMemo, useState, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { AmountInput } from "./AmountInput";
+import { RecipientInput } from "./RecipientInput";
+import { TokenSelector } from "./TokenSelector";
 import { createPublicClient, http, isAddress, parseEther } from "viem";
 import { mainnet } from "viem/chains";
 import { normalize } from "viem/ens";
 import { GlassCard, GradientButton } from "~~/components/ui";
-import { TokenSelector } from "./TokenSelector";
-import { AmountInput } from "./AmountInput";
-import { RecipientInput } from "./RecipientInput";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { saveContacts } from "~~/utils/ethSplitter";
 
@@ -22,10 +22,9 @@ const TOKENS = [
 ];
 
 export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
-
   // Token state
-  const [selectedToken, setSelectedToken] = useState(TOKENS[0]);
-  const [customToken, setCustomToken] = useState("");
+  const [selectedToken] = useState(TOKENS[0]); // setSelectedToken unused for now
+  const [] = useState(""); // customToken and setCustomToken unused for now
   const [tokenContract, setTokenContract] = useState("");
 
   // Split form state
@@ -36,7 +35,7 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
   // Derived state
   const [wallets, setWallets] = useState<string[]>([]);
   const [walletsFilter, setWalletsFilter] = useState<string[]>([]);
-  const [totalAmount, setTotalAmount] = useState("");
+  const [, setTotalAmount] = useState(""); // totalAmount unused
   const [totalTokenAmount, setTotalTokenAmount] = useState("");
   const [totalEthAmount, setTotalEthAmount] = useState("");
   const [invalidAddresses, setInvalidAddresses] = useState<string[]>([]);
@@ -47,33 +46,34 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
     transport: http(),
   });
 
-  const tokenAddress = useMemo(() => (selectedToken.symbol === "CUSTOM" ? customToken.trim() : selectedToken.address), [
-    selectedToken,
-    customToken,
-  ]);
+  // const tokenAddress = useMemo(
+  //   () => (selectedToken.symbol === "CUSTOM" ? customToken.trim() : selectedToken.address),
+  //   [selectedToken, customToken],
+  // ); // unused for now
 
-  const recipientList = useMemo(() => {
-    return recipients
-      .split(/\s|,|\n/g)
-      .map((r) => r.trim())
-      .filter(Boolean);
-  }, [recipients]);
+  // const recipientList = useMemo(() => {
+  //   return recipients
+  //     .split(/\s|,|\n/g)
+  //     .map(r => r.trim())
+  //     .filter(Boolean);
+  // }, [recipients]); // unused for now
 
   const unequalAmounts = useMemo(() => {
     return unequalCsv
       .split(/\s|,|\n/g)
-      .map((v) => v.trim())
+      .map(v => v.trim())
       .filter(Boolean);
   }, [unequalCsv]);
 
   // Contract interactions
   const { writeContractAsync: splitEqualETH } = useScaffoldWriteContract("DGTokenSplitter");
-  const { writeContractAsync: splitEqualERC20, isMining: splitErc20Loading } = useScaffoldWriteContract("DGTokenSplitter");
+  const { writeContractAsync: splitEqualERC20, isMining: splitErc20Loading } =
+    useScaffoldWriteContract("DGTokenSplitter");
 
   const canSplit = useMemo(() => {
     if (wallets.length === 0) return false;
     if (splitKind === "equal") return Number(amountEach) > 0;
-    return unequalAmounts.length === wallets.length && unequalAmounts.every((v) => Number(v) > 0);
+    return unequalAmounts.length === wallets.length && unequalAmounts.every(v => Number(v) > 0);
   }, [wallets, splitKind, amountEach, unequalAmounts]);
 
   const resolveEns = async (name: string) => {
@@ -82,7 +82,7 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
         name: normalize(name),
       });
       return String(ensAddress);
-    } catch (error) {
+    } catch {
       return "null";
     }
   };
@@ -93,7 +93,7 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
         address: normalize(address) as `0x${string}`,
       });
       return String(ensName);
-    } catch (error) {
+    } catch {
       return "null";
     }
   };
@@ -171,8 +171,8 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
         });
       }
       saveContacts(wallets);
-    } catch (error) {
-      console.error("Split failed:", error);
+    } catch {
+      console.error("Split failed");
     }
   };
 
@@ -194,7 +194,6 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
     }
     setTotalAmount(totalAmount.toString());
   }, [amountEach, wallets, mode]);
-
 
   return (
     <GlassCard className="mx-auto max-w-xl">
@@ -236,13 +235,9 @@ export function SplitterForm({ mode, splitKind }: SplitterFormProps) {
       />
 
       {/* Primary action */}
-      <GradientButton
-        onClick={handleSplit}
-        disabled={!canSplit}
-      >
+      <GradientButton onClick={handleSplit} disabled={!canSplit}>
         {mode === "token" ? "Split Tokens" : "Split ETH"}
       </GradientButton>
-
     </GlassCard>
   );
 }

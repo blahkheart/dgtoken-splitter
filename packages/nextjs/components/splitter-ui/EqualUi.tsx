@@ -9,7 +9,7 @@ import { mainnet } from "viem/chains";
 import { normalize } from "viem/ens";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { Address, EtherInput } from "~~/components/scaffold-eth";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { UiJsxProps } from "~~/types/splitterUiTypes/splitterUiTypes";
 import { saveContacts } from "~~/utils/ethSplitter";
 
@@ -39,7 +39,7 @@ const EqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
         name: normalize(name),
       });
       return String(ensAddress);
-    } catch (error) {
+    } catch {
       return "null";
     }
   };
@@ -113,18 +113,10 @@ const EqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
     setLoadingAddresses(false);
   };
 
-  const { writeAsync: splitEqualETH } = useScaffoldContractWrite({
-    contractName: "ETHSplitter",
-    functionName: "splitEqualETH",
-    args: [wallets],
-    value: totalEthAmount.toString() as `${number}`,
-  });
+  const { writeContractAsync: splitEqualETH } = useScaffoldWriteContract("DGTokenSplitter");
 
-  const { writeAsync: splitEqualERC20, isMining: splitErc20Loading } = useScaffoldContractWrite({
-    contractName: "ETHSplitter",
-    functionName: "splitEqualERC20",
-    args: [tokenContract, wallets, BigInt(totalTokenAmount)],
-  });
+  const { writeContractAsync: splitEqualERC20, isMining: splitErc20Loading } =
+    useScaffoldWriteContract("DGTokenSplitter");
 
   useEffect(() => {
     let totalAmount: any = 0;
@@ -265,7 +257,18 @@ const EqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
               type="button"
               disabled={wallets.length <= 1 || totalAmount === "0"}
               onClick={async () => {
-                splitItem === "split-eth" ? await splitEqualETH() : await splitEqualERC20();
+                if (splitItem === "split-eth") {
+                  await splitEqualETH({
+                    functionName: "splitEqualETH",
+                    args: [wallets],
+                    value: BigInt(totalEthAmount.toString()),
+                  });
+                } else {
+                  await splitEqualERC20({
+                    functionName: "splitEqualERC20",
+                    args: [tokenContract, wallets, BigInt(totalTokenAmount)],
+                  });
+                }
                 saveContacts(wallets);
               }}
               className={`btn bg-new_tertiary w-full text-white capitalize text-lg `}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import CopyToClipboard from "react-copy-to-clipboard";
+// import CopyToClipboard from "react-copy-to-clipboard"; // replaced with native clipboard API
 import { ArrowDownTrayIcon, CheckCircleIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 
 const ExportList = ({ wallets, splitType }: { wallets: string[]; splitType?: string }) => {
@@ -32,23 +32,22 @@ const ExportList = ({ wallets, splitType }: { wallets: string[]; splitType?: str
                 <span className=" whitespace-nowrap">Copy List</span>
               </div>
             ) : (
-              <CopyToClipboard
-                text={wallets.join(", ")}
-                onCopy={() => {
+              <div
+                className="btn-sm !rounded-xl flex gap-3 py-3 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(wallets.join(", "));
                   setListCopied(true);
                   setTimeout(() => {
                     setListCopied(false);
                   }, 800);
                 }}
               >
-                <div className="btn-sm !rounded-xl flex gap-3 py-3">
-                  <DocumentDuplicateIcon
-                    className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
-                    aria-hidden="true"
-                  />
-                  <span className=" whitespace-nowrap">Copy List</span>
-                </div>
-              </CopyToClipboard>
+                <DocumentDuplicateIcon
+                  className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
+                  aria-hidden="true"
+                />
+                <span className=" whitespace-nowrap">{listCopied ? "Copied!" : "Copy List"}</span>
+              </div>
             )}
           </li>
           <li>
@@ -70,23 +69,22 @@ const ExportList = ({ wallets, splitType }: { wallets: string[]; splitType?: str
                 <span className=" whitespace-nowrap">Copy List Url</span>
               </div>
             ) : (
-              <CopyToClipboard
-                text={splitUrl}
-                onCopy={() => {
+              <div
+                className="btn-sm !rounded-xl flex gap-3 py-3 cursor-pointer"
+                onClick={() => {
+                  navigator.clipboard.writeText(splitUrl);
                   setListUrlCopied(true);
                   setTimeout(() => {
                     setListUrlCopied(false);
                   }, 800);
                 }}
               >
-                <div className="btn-sm !rounded-xl flex gap-3 py-3">
-                  <DocumentDuplicateIcon
-                    className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
-                    aria-hidden="true"
-                  />
-                  <span className=" whitespace-nowrap">Copy List Url</span>
-                </div>
-              </CopyToClipboard>
+                <DocumentDuplicateIcon
+                  className="text-xl font-normal h-6 w-4 cursor-pointer ml-2 sm:ml-0"
+                  aria-hidden="true"
+                />
+                <span className=" whitespace-nowrap">{listUrlCopied ? "Copied!" : "Copy List Url"}</span>
+              </div>
             )}
           </li>
         </ul>

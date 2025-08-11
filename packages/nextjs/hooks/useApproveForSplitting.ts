@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { formatEther, parseEther, erc20Abi } from "viem";
+import { erc20Abi, formatEther, parseEther } from "viem";
 import { useAccount, useChainId, useReadContract, useWriteContract } from "wagmi";
 import { useTransactor } from "~~/hooks/scaffold-eth";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
@@ -73,7 +73,7 @@ export const useApproveForSplitting = ({
       try {
         setIsLoading(true);
         const approveAmount = parseEther((amount * 1.01).toString());
-        
+
         await writeContractAsync({
           address: tokenAddress as `0x${string}`,
           abi: erc20Abi,
@@ -85,7 +85,6 @@ export const useApproveForSplitting = ({
         setTimeout(() => {
           refetchAllowance();
         }, 2000);
-
       } catch (e: any) {
         notification.error(e.message || "Approval failed");
       } finally {

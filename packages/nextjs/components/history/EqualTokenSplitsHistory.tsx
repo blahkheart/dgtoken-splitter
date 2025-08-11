@@ -6,7 +6,7 @@ import ExportList from "../splitter-ui/splitter-components/ExportList";
 import { formatEther } from "viem";
 import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import useSpliiterHistory from "~~/hooks/useSpliiterHistory";
-import { getBlockExplorerTxLink, getTargetNetwork } from "~~/utils/scaffold-eth";
+import { getBlockExplorerTxLink, getTargetNetworks } from "~~/utils/scaffold-eth";
 import { getDate } from "~~/utils/scaffold-eth/ethsplitter";
 
 const EqualTokenSplitsHistory = () => {
@@ -60,7 +60,7 @@ const EqualTokenSplitsHistory = () => {
               <div className="flex flex-col">
                 [
                 {event.args.recipients.map((address: string) => (
-                  <Address key={address} address={address} hideBlockie={true} />
+                  <Address key={address} address={address} />
                 ))}
                 ]
               </div>
@@ -68,7 +68,7 @@ const EqualTokenSplitsHistory = () => {
 
               <span className="py-1">token (address):</span>
               <div>
-                <Address address={event.args.token} hideBlockie={true} />
+                <Address address={event.args.token} />
               </div>
               {event.log.transactionHash && (
                 <div>
@@ -76,7 +76,7 @@ const EqualTokenSplitsHistory = () => {
                     <span>Transaction Link</span>
                     <span className="">
                       <Link
-                        href={getBlockExplorerTxLink(getTargetNetwork().id, event.log.transactionHash)}
+                        href={getBlockExplorerTxLink(getTargetNetworks()[0].id, event.log.transactionHash)}
                         target="_blank"
                       >
                         <ArrowTopRightOnSquareIcon className="text-sm w-4 cursor-pointer" aria-hidden="true" />

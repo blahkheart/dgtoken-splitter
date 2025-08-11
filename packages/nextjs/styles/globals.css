@@ -101,14 +101,14 @@
 
 :root {
   --bg-ink: #0a0f14;
-  --card: rgba(255,255,255,0.05);
-  --card-border: rgba(255,255,255,0.10);
-  --muted: #94a3b8;         /* slate-400 */
-  --text: #e2e8f0;          /* slate-200 */
-  --brand-1: #22d3ee;       /* cyan-400 */
-  --brand-2: #0ea5e9;       /* sky-500 */
-  --success-bg: rgba(16,185,129,0.15);
-  --success-br: rgba(52,211,153,0.30);
+  --card: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --muted: #94a3b8; /* slate-400 */
+  --text: #e2e8f0; /* slate-200 */
+  --brand-1: #22d3ee; /* cyan-400 */
+  --brand-2: #0ea5e9; /* sky-500 */
+  --success-bg: rgba(16, 185, 129, 0.15);
+  --success-br: rgba(52, 211, 153, 0.3);
 }
 
 :root,

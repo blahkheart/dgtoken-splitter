@@ -8,7 +8,7 @@ import TokenData from "./splitter-components/TokenData";
 import { decompressFromEncodedURIComponent } from "lz-string";
 import { isAddress, parseUnits } from "viem";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { UiJsxProps } from "~~/types/splitterUiTypes/splitterUiTypes";
 import { saveContacts } from "~~/utils/ethSplitter";
 
@@ -21,7 +21,7 @@ const UnEqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
   const [amountsInWei, setAmountsInWei] = useState<any[]>([]);
   const [totalAmount, setTotalAmount] = useState("");
   const [tokenContract, setTokenContract] = useState("");
-  const [usdGenMode, setUSDGenMode] = useState(false);
+  const [usdGenMode] = useState(false); // setUSDGenMode unused
 
   function addMultipleAddress(value: string) {
     const validateAddress = (address: string) => address.includes("0x") && address.length === 42;
@@ -76,18 +76,9 @@ const UnEqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
     setAmounts(newAmounts);
   };
 
-  const { writeAsync: splitETH } = useScaffoldContractWrite({
-    contractName: "ETHSplitter",
-    functionName: "splitETH",
-    args: [wallets, amountsInWei],
-    value: totalAmount as `${number}`,
-  });
+  const { writeContractAsync: splitETH } = useScaffoldWriteContract("DGTokenSplitter");
 
-  const { writeAsync: splitERC20, isMining: splitErc20Loading } = useScaffoldContractWrite({
-    contractName: "ETHSplitter",
-    functionName: "splitERC20",
-    args: [tokenContract, wallets, amountsInWei],
-  });
+  const { writeContractAsync: splitERC20, isMining: splitErc20Loading } = useScaffoldWriteContract("DGTokenSplitter");
 
   useEffect(() => {
     let totalETH = 0;
@@ -184,8 +175,7 @@ const UnEqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
                         <EtherInput
                           value={amounts[index]}
                           onChange={val => updateAmounts(val, index)}
-                          usdGenMode={usdGenMode}
-                          setUsdGenMode={setUSDGenMode}
+                          usdMode={usdGenMode}
                         />
                       )}
                     </span>
@@ -224,7 +214,18 @@ const UnEqualUi = ({ splitItem, account, splitterContract }: UiJsxProps) => {
                 wallets.some(wallet => !isAddress(wallet))
               }
               onClick={async () => {
-                splitItem === "split-tokens" ? await splitERC20() : await splitETH();
+                if (splitItem === "split-tokens") {
+                  await splitERC20({
+                    functionName: "splitERC20",
+                    args: [tokenContract, wallets, amountsInWei],
+                  });
+                } else {
+                  await splitETH({
+                    functionName: "splitETH",
+                    args: [wallets, amountsInWei],
+                    value: BigInt(totalAmount.toString()),
+                  });
+                }
                 saveContacts(wallets);
               }}
               className={`btn btn-primary w-full font-black `}

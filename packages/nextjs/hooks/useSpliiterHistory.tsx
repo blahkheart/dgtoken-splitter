@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { readContract } from "@wagmi/core";
-import { erc20ABI, useAccount, useNetwork } from "wagmi";
-import { useScaffoldEventHistory, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
+import { wagmiConfig } from "~~/services/web3/wagmiConfig";
+import { erc20Abi } from "viem";
+import { useAccount, useChainId } from "wagmi";
+import { useScaffoldEventHistory } from "~~/hooks/scaffold-eth";
+// import { useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth"; // not available in current version
 
 const useSpliiterHistory = () => {
   const [ethSplitEvents, setEthSplitEvents] = useState<any[] | undefined>([]);
@@ -10,14 +13,14 @@ const useSpliiterHistory = () => {
   const [erc20SplitEqualEvents, setErc20SplitEqualEvents] = useState<any[] | undefined>([]);
 
   const { address } = useAccount();
-  const { chain } = useNetwork();
+  const chainId = useChainId();
 
   const getTokenSymbol = async (tokenAddress: string) => {
     if (tokenAddress && tokenAddress != "") {
       try {
-        const data = await readContract({
-          address: tokenAddress,
-          abi: erc20ABI,
+        const data = await readContract(wagmiConfig, {
+          address: tokenAddress as `0x${string}`,
+          abi: erc20Abi,
           functionName: "symbol",
         });
         return data;
@@ -29,28 +32,28 @@ const useSpliiterHistory = () => {
   };
 
   const ethSplits = useScaffoldEventHistory({
-    contractName: "ETHSplitter",
+    contractName: "DGTokenSplitter",
     eventName: "EthSplit",
     fromBlock: BigInt(Number(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) || 0),
     blockData: true,
   });
 
   const ethSplitsEqual = useScaffoldEventHistory({
-    contractName: "ETHSplitter",
+    contractName: "DGTokenSplitter",
     eventName: "EthSplitEqual",
     fromBlock: BigInt(Number(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) || 0),
     blockData: true,
   });
 
   const erc20Splits = useScaffoldEventHistory({
-    contractName: "ETHSplitter",
+    contractName: "DGTokenSplitter",
     eventName: "Erc20Split",
     fromBlock: BigInt(Number(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) || 0),
     blockData: true,
   });
 
   const erc20SplitsEqual = useScaffoldEventHistory({
-    contractName: "ETHSplitter",
+    contractName: "DGTokenSplitter",
     eventName: "Erc20SplitEqual",
     fromBlock: BigInt(Number(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) || 0),
     blockData: true,
@@ -59,18 +62,18 @@ const useSpliiterHistory = () => {
   useEffect(() => {
     const events = ethSplits.data?.filter(obj => obj.args.sender === address);
     setEthSplitEvents(events);
-  }, [ethSplits.isLoading, address, ethSplits.data, chain]);
+  }, [ethSplits.isLoading, address, ethSplits.data, chainId]);
 
   useEffect(() => {
     const events = ethSplitsEqual.data?.filter(obj => obj.args.sender === address);
     setEthSplitEqualEvents(events);
-  }, [ethSplitsEqual.isLoading, address, ethSplitsEqual.data, chain]);
+  }, [ethSplitsEqual.isLoading, address, ethSplitsEqual.data, chainId]);
 
   useEffect(() => {
     const events = erc20Splits.data?.filter(obj => obj.args.sender === address);
     if (events) {
       const eventsWithTokenSymbol = events.map(async event => {
-        const symbol = await getTokenSymbol(event.args.token);
+        const symbol = await getTokenSymbol(event.args.token as string);
         return {
           ...event,
           tokenSymbol: symbol,
@@ -81,13 +84,13 @@ const useSpliiterHistory = () => {
       });
     }
     // setErc20SplitEvents(events);
-  }, [erc20Splits.isLoading, address, erc20Splits.data, chain]);
+  }, [erc20Splits.isLoading, address, erc20Splits.data, chainId]);
 
   useEffect(() => {
     const events = erc20SplitsEqual.data?.filter(obj => obj.args.sender === address);
     if (events) {
       const eventsWithTokenSymbol = events.map(async event => {
-        const symbol = await getTokenSymbol(event.args.token);
+        const symbol = await getTokenSymbol(event.args.token as string);
         return {
           ...event,
           tokenSymbol: symbol,
@@ -98,10 +101,11 @@ const useSpliiterHistory = () => {
       });
     }
     // setErc20SplitEqualEvents(events);
-  }, [erc20SplitsEqual.isLoading, address, erc20SplitsEqual.data, chain]);
+  }, [erc20SplitsEqual.isLoading, address, erc20SplitsEqual.data, chainId]);
 
-  useScaffoldEventSubscriber({
-    contractName: "ETHSplitter",
+  // Event subscribers commented out - useScaffoldEventSubscriber not available
+  /* useScaffoldEventSubscriber({
+    contractName: "DGTokenSplitter",
     eventName: "EthSplit",
     listener: logs => {
       logs.map(log => {
@@ -123,10 +127,10 @@ const useSpliiterHistory = () => {
         });
       });
     },
-  });
+  }); */
 
-  useScaffoldEventSubscriber({
-    contractName: "ETHSplitter",
+  /* useScaffoldEventSubscriber({
+    contractName: "DGTokenSplitter",
     eventName: "EthSplitEqual",
     listener: logs => {
       logs.map(log => {
@@ -147,10 +151,10 @@ const useSpliiterHistory = () => {
         });
       });
     },
-  });
+  }); */
 
-  useScaffoldEventSubscriber({
-    contractName: "ETHSplitter",
+  /* useScaffoldEventSubscriber({
+    contractName: "DGTokenSplitter",
     eventName: "Erc20Split",
     listener: logs => {
       logs.map(async log => {
@@ -173,10 +177,10 @@ const useSpliiterHistory = () => {
         });
       });
     },
-  });
+  }); */
 
-  useScaffoldEventSubscriber({
-    contractName: "ETHSplitter",
+  /* useScaffoldEventSubscriber({
+    contractName: "DGTokenSplitter",
     eventName: "Erc20SplitEqual",
     listener: logs => {
       logs.map(async log => {
@@ -199,7 +203,7 @@ const useSpliiterHistory = () => {
         });
       });
     },
-  });
+  }); */
 
   return {
     ethSplitEvents,
