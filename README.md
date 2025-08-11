@@ -1,6 +1,6 @@
 # DG Token Splitter
 
-DG Token Splitter is a smart contract and Next.js application built with [Scaffold ETH 2](https://github.com/scaffold-eth/scaffold-eth-2) for distributing Ethereum (ETH) or ERC20 tokens to multiple recipients. It supports both equal and custom amount distributions with gas-optimized operations.
+DG Token Splitter is a smart contract and Next.js application built with [Scaffold ETH 2](https://github.com/scaffold-eth/scaffold-eth-2) for distributing Ethereum (ETH) or ERC20 tokens to multiple recipients. It supports both equal and custom amount distributions with gas-optimized operations and optional Unlock Protocol token-gating for access control.
 
 **Disclaimer:** This contract is a prototype and intended for research and
 development purposes only. Use it at your own discretion.
@@ -59,14 +59,34 @@ Visit `http://localhost:3000` to see the application.
 - Split ETH equally among multiple recipients.
 - Split ERC20 tokens among multiple recipients based on specified amounts.
 - Split ERC20 tokens equally among multiple recipients.
+- **Token-Gating Integration**: Optional Unlock Protocol integration for access control
+  - Configurable `feeSwitch` to toggle access restrictions on/off
+  - When enabled, only users with valid keys to the configured lock can split tokens
+  - Seamless operation when disabled (open access for all users)
 - Withdraw remaining ETH or ERC20 tokens to the contract owner.
 
 ## Usage
 
-1. Deploy the DGTokenSplitter contract.
+### Basic Usage
+1. Deploy the DGTokenSplitter contract with an initial owner address.
 2. Call the appropriate function to split ETH or ERC20 tokens among recipients.
 3. Recipients will receive their allocated amounts.
 4. The contract owner can withdraw any remaining ETH or ERC20 tokens.
+
+### Token-Gating Configuration (Optional)
+Administrators can optionally restrict access to split functions using Unlock Protocol:
+
+1. **Deploy an Unlock Protocol lock** or use an existing one
+2. **Configure the lock address**: Call `setSplitLock(lockAddress)` as contract owner
+3. **Enable token-gating**: Call `toggleFeeSwitch(true)` as contract owner
+4. **Users need valid keys**: Only addresses with valid keys to the configured lock can split tokens
+5. **Disable anytime**: Call `toggleFeeSwitch(false)` to restore open access
+
+### Access Control Functions
+- `hasAccess(address)` - Check if an address can access split functions
+- `getKeyExpiration(address)` - Get key expiration timestamp for a user
+- `toggleFeeSwitch(bool)` - Enable/disable token-gating (owner only)
+- `setSplitLock(address)` - Set the Unlock Protocol lock address (owner only)
 
 ## Functions
 
