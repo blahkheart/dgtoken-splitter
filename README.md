@@ -1,16 +1,6 @@
-# ETHSplitter
+# DG Token Splitter
 
-![Screenshot_658](https://github.com/Avelous/Eth-Splitter/assets/86206128/38ab22cf-5ad4-475d-bf74-1df80affc81a)
-
-[ethsplitter.vercel.app](https://ethsplitter.vercel.app/) 
-
-<br></br> 
-DG Token Splitter is a
-smart contract and a NextJs App built with
-[Scaffold ETH](https://github.com/scaffold-eth/scaffold-eth-2) to split Ethereum
-(ETH) or ERC20 tokens between multiple recipients. It provides functionality to
-distribute ETH or ERC20 tokens according to specified amounts or equally among
-recipients.
+DG Token Splitter is a smart contract and Next.js application built with [Scaffold ETH 2](https://github.com/scaffold-eth/scaffold-eth-2) for distributing Ethereum (ETH) or ERC20 tokens to multiple recipients. It supports both equal and custom amount distributions with gas-optimized operations.
 
 **Disclaimer:** This contract is a prototype and intended for research and
 development purposes only. Use it at your own discretion.
@@ -33,43 +23,35 @@ development purposes only. Use it at your own discretion.
 
 ## Quickstart
 
-To get started with ETH Splitter, follow the steps below:
+To get started with DG Token Splitter, follow the steps below:
 
 Clone this repo & install dependencies
 
-```
-git clone https://github.com/Avelous/Eth-Splitter.git
-cd ETH-Splitter
+```bash
+git clone https://github.com/dgtoken-splitter/dgtoken-splitter.git
+cd dgtoken-splitter
 yarn install
 ```
 
 Run a local network in the first terminal:
 
-```
+```bash
 yarn chain
 ```
 
-This command starts a local Ethereum network using Hardhat. The network runs on
-your local machine and can be used for testing and development. You can
-customize the network configuration in hardhat.config.ts.
+On a second terminal, deploy the contract:
 
-On a second terminal, deploy the test contract:
-
-```
+```bash
 yarn deploy
 ```
 
-This command deploys a test smart contract to the local network. The contract is
-located in packages/hardhat/contracts and can be modified to suit your needs.
-The yarn deploy command uses the deploy script located in
-packages/hardhat/deploy to deploy the contract to the network. You can also
-customize the deploy script.
+On a third terminal, start your Next.js app:
 
-On a third terminal, start your NextJS app:
-
-```
+```bash
 yarn start
 ```
+
+Visit `http://localhost:3000` to see the application.
 
 ## Features
 
@@ -81,7 +63,7 @@ yarn start
 
 ## Usage
 
-1. Deploy the ETHSplitter contract.
+1. Deploy the DGTokenSplitter contract.
 2. Call the appropriate function to split ETH or ERC20 tokens among recipients.
 3. Recipients will receive their allocated amounts.
 4. The contract owner can withdraw any remaining ETH or ERC20 tokens.
@@ -169,49 +151,31 @@ The contract emits the following events:
 
 ## Frontend
 
-The frontend of the ETHSplitter contract is built using Next.js, providing a
-user interface to interact with the smart contract. It offers options to split
-ETH and ERC20 tokens equally or unequally among recipients. The frontend is
-bulit as a safe app to work with multisigs.
+The frontend is built using Next.js with a modern glass-morphism UI, providing an intuitive interface to interact with the smart contract.
 
 ### Features
 
-- Split ETH among recipients:
-  - Specify individual amounts for each recipient.
-  - Split ETH equally among recipients.
-- Split ERC20 tokens among recipients:
-  - Specify individual amounts for each recipient.
-  - Split ERC20 tokens equally among recipients.
+- **Split ETH**: Distribute Ether equally or with custom amounts
+- **Split Tokens**: Distribute ERC20 tokens with built-in approval flow
+- **ENS Support**: Resolve ENS names for recipient addresses
+- **Contact Management**: Save and reuse recipient lists
+- **Gas Optimized**: Efficient batch operations for multiple recipients
 
 ### Usage
 
-1. Connect your Ethereum wallet to the application.
-2. Select the desired operation:
-   - **Split ETH**: Splitting Ether (ETH) among recipients.
-   - **Split TOKEN**: Splitting ERC20 tokens among recipients.
-3. Choose the split type:
-   - **Unequal**: Specify individual amounts for each recipient.
-   - **Equal**: Split the amount equally among recipients.
-4. Provide the required inputs:
-   - **Recipients**: Enter the addresses of the recipients, separated by commas.
-   - **Amounts**: Enter the corresponding amounts to be split among the
-     recipients, separated by commas.
-   - **Token Address (for ERC20)**: Enter the contract address of the ERC20
-     token (if applicable).
-5. Click the "Split" button to execute the transaction.
-6. Confirm the transaction using your connected wallet.
+1. Connect your Ethereum wallet using RainbowKit
+2. Select split mode: **Split ETH** or **Split Tokens**
+3. Choose distribution type: **Equal Splits** or **Unequal Splits**
+4. For token splits: Select token and approve spending
+5. Enter recipient addresses (comma or line-separated)
+6. Specify amounts and execute the transaction
 
-### Contributing
-
-If you would like to contribute to the development of the ETHSplitter frontend,
-please follow these steps:
+## Contributing
 
 1. Fork the repository and create a new branch for your feature or bug fix.
-2. Make the necessary changes and ensure the code follows the project's style
-   guidelines.
+2. Make the necessary changes and ensure the code follows the project's style guidelines.
 3. Write tests for any new functionality.
 4. Commit your changes and push them to your forked repository.
-5. Submit a pull request, describing your changes in detail and referencing any
-   relevant issues.
+5. Submit a pull request, describing your changes in detail and referencing any relevant issues.
 
-Built with [Scaffold ETH](https://github.com/scaffold-eth/scaffold-eth-2)
+Built with [Scaffold ETH 2](https://github.com/scaffold-eth/scaffold-eth-2)

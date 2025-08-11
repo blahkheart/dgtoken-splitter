@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-**Purpose:** Enable Claude Code to safely understand, extend, and maintain this Scaffold‑ETH 2 codebase without breaking its architecture. Follow these directives when reading, generating, or modifying code.
+**Purpose:** Enable Claude Code to safely understand, extend, and maintain this DG Token Spliitter codebase without breaking its architecture. Follow these directives when reading, generating, or modifying code.
 
 ---
 
@@ -371,9 +371,72 @@ const { data: events } = useScaffoldEventHistory({
 
 **Integrating an external contract**
 
--
+
+## 1) Architecture Overview (Project Shape)
+
+**Monorepo layout**
+
+- `packages/nextjs/` – Next.js 13+ (App Router), Tailwind v3, **gradual migration away from daisyUI for new code**; RainbowKit + Wagmi + viem.
+- `packages/hardhat/` *or* `packages/foundry/` – Solidity framework. Contains contracts, deploy scripts, tests.
+
+**Cross-package contract mapping**
+
+- `packages/nextjs/contracts/deployedContracts.ts` – **Auto-generated** on `yarn deploy`. **Never** hand-edit.
+- `packages/nextjs/contracts/externalContracts.ts` – Curated addresses/ABIs for third-party contracts.
+- `packages/nextjs/scaffold.config.ts` – Dapp config (target networks, polling, provider keys, burner wallet behavior, etc.).
+
+**UI system & folders**
+
+- Styling: **TailwindCSS only for new UI**. We keep daisyUI in the repo for legacy components but **do not** use it for new work unless specified.
+- **Design tokens** live in `packages/nextjs/styles/globals.css` (see §3).
+- **Base primitives** (new): `packages/nextjs/components/ui/*`
+- **Feature components** (new): `packages/nextjs/components/splitter/*`
+- **Feature containers** (logic + hooks): `packages/nextjs/features/*`
+- Re-export barrels per folder.
+
+**Wallets / Providers**
+
+- RainbowKit config: `packages/nextjs/providers/RainbowKitProvider.tsx`
+- Wagmi/viem power reads/writes/events; custom hooks wrap Wagmi for type-safe DX.
 
 ---
 
-*This CLAUDE.md is the single source of truth for code generation conventions in this repo. If you must diverge, explain why in your PR description and update this file.*
+## 2) Interaction Patterns (Read / Write / Events)
 
+Prefer the project’s **custom hooks** over raw Wagmi:
+
+- **Read**: `useScaffoldReadContract({ contractName, functionName, args? })`
+- **Write**: `useScaffoldWriteContract(contractName)` →  
+  `writeContractAsync({ functionName, args?, value? }, { onBlockConfirmation? })`
+- **Events (historical)**: `useScaffoldEventHistory(...)`
+- **Events (live)**: `useScaffoldWatchContractEvent(...)`
+- **Contract instance**: `useScaffoldContract({ contractName, walletClient?, chainId? })` (only if you need direct client).
+- **UX wrapper for tx feedback**: `useTransactor()` – toast success/error; wait for confirmations.
+- Use `parseUnits/formatUnits` (`viem`) for token math; never pass floats to contract calls.
+
+**Typing depends on**:
+
+- `deployedContracts.ts` (auto-generated)
+- `externalContracts.ts` (manual)
+- `scaffold.config.ts` (`targetNetworks` must include deployed chain)
+
+> ⚠️ When multiple `targetNetworks` exist, **contract names must match** across chains. Types inferred from `targetNetworks[0]`.
+
+---
+
+## 3) Visual Language & Design Tokens (New UI)
+
+**Add these CSS variables** to `packages/nextjs/styles/globals.css` inside `:root`:
+
+```css
+:root {
+  --bg-ink: #0a0f14;
+  --card: rgba(255,255,255,0.05);
+  --card-border: rgba(255,255,255,0.10);
+  --muted: #94a3b8;         /* slate-400 */
+  --text: #e2e8f0;          /* slate-200 */
+  --brand-1: #22d3ee;       /* cyan-400 */
+  --brand-2: #0ea5e9;       /* sky-500 */
+  --success-bg: rgba(16,185,129,0.15);
+  --success-br: rgba(52,211,153,0.30);
+}
