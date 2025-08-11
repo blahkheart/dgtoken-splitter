@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useChainId } from "wagmi";
-import { FieldLabel } from "~~/components/ui";
 import { Spinner } from "~~/components/Spinner";
+import { FieldLabel } from "~~/components/ui";
 import tokens from "~~/constants/tokens";
 import { useApproveForSplitting } from "~~/hooks/useApproveForSplitting";
+
 
 interface TokenSelectorProps {
   tokenContract: string;
@@ -12,9 +13,9 @@ interface TokenSelectorProps {
 }
 
 const TOKENS = [
-  { symbol: "USDC", name: "USD Coin", address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48" },
-  { symbol: "DAI", name: "Dai", address: "0x6B175474E89094C44Da98b954EedeAC495271d0F" },
-  { symbol: "ENS", name: "Ethereum Name Service", address: "0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72" },
+  { symbol: "DG", name: "DreadGang", address: "0x4aA47eD29959c7053996d8f7918db01A62D02ee5" },
+  { symbol: "UP", name: "UnlockProtocolToken", address: "0xac27fa800955849d6d17cc8952ba9dd6eaa66187" },
+  { symbol: "USDC", name: "USD Coin", address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" },
   { symbol: "CUSTOM", name: "Custom", address: "" },
 ];
 
